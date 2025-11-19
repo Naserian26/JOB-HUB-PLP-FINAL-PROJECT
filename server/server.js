@@ -17,8 +17,12 @@ await connectDB();
 await connectCloudinary();
 
 // Middleware
-app.use(cors());
 app.use(express.json());
+app.use(cors({
+origin: 'https://job-hub-plp-final-project.vercel.app',
+  credentials: true,
+}));
+
 app.use(clerkMiddleware());
 
 // Routes
