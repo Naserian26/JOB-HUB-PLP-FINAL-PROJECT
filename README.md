@@ -1,6 +1,20 @@
 # Job Hub - MERN Stack Job Portal
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+
+
+## 🌍 Live Demo
+🌍 Live Demo
+
+🌐 Live Demo
+
+Frontend (Live Website):
+🔗 https://job-hub-plp-final-project.vercel.app/
+
+Backend API (Render Server):
+🔗 https://job-hub-plp-final-project-server.onrender.com
+
+
 
 A modern job portal application built with the MERN stack (MongoDB, Express, React, Node.js) where recruiters/companies can post jobs and applicants can search/apply for opportunities. Features dedicated dashboards for both recruiters and applicants.
 
