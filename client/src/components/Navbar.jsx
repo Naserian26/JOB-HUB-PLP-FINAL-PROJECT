@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
-import { Zap, Briefcase } from "lucide-react";
+import { Zap, Briefcase, Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const { openSignIn } = useClerk();
@@ -10,6 +10,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { setShowRecruiterLogin } = useContext(AppContext);
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Handle scroll event
   useEffect(() => {
@@ -87,14 +88,46 @@ const Navbar = () => {
                 </button>
                 <button
                   onClick={(e) => openSignIn()}
-                  className={`bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white px-6 py-2.5 rounded-xl font-medium text-sm ${scrolled ? 'shadow-lg hover:shadow-blue-500/30' : 'hover:shadow-md'} transition-all duration-300`}
+                  className={`hidden md:block bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white px-6 py-2.5 rounded-xl font-medium text-sm ${scrolled ? 'shadow-lg hover:shadow-blue-500/30' : 'hover:shadow-md'} transition-all duration-300`}
                 >
                   Get Started
+                </button>
+                
+                {/* Mobile menu button - NEW */}
+                <button
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="md:hidden p-2 rounded-lg hover:bg-gray-100"
+                >
+                  {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
               </>
             )}
           </div>
         </nav>
+        
+        {/* Mobile menu - NEW */}
+        {mobileMenuOpen && (
+          <div className="md:hidden fixed top-16 right-4 bg-white rounded-xl shadow-lg p-4 w-48 z-30">
+            <button
+              onClick={(e) => {
+                setShowRecruiterLogin(true);
+                setMobileMenuOpen(false);
+              }}
+              className="w-full text-left text-sm font-medium text-gray-600 hover:text-blue-600 transition-all duration-200 px-4 py-2 rounded-lg hover:bg-blue-50 mb-2"
+            >
+              Recruiter Portal
+            </button>
+            <button
+              onClick={(e) => {
+                openSignIn();
+                setMobileMenuOpen(false);
+              }}
+              className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300"
+            >
+              Get Started
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Add this to your tailwind.config.js or CSS file */}
