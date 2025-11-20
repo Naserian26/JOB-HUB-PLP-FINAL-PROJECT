@@ -8,7 +8,6 @@ import { User, Mail, Lock, Eye, EyeOff, X, Github, Linkedin } from "lucide-react
 
 const RecruiterLogin = () => {
   const navigate = useNavigate();
-  // Set initial state based on whether companyToken exists in localStorage
   const initialToken = localStorage.getItem("companyToken");
   const [state, setState] = useState(initialToken ? "Login" : "Sign Up");
   const [name, setName] = useState("");
@@ -21,7 +20,6 @@ const RecruiterLogin = () => {
   const { setShowRecruiterLogin, backendUrl, setCompanyToken, setCompanyData, companyToken } =
     useContext(AppContext);
 
-  // Update state when companyToken changes from context
   useEffect(() => {
     if (companyToken) {
       setState("Login");
@@ -51,10 +49,7 @@ const RecruiterLogin = () => {
 
     try {
       if (state === "Login") {
-        const { data } = await axios.post(backendUrl + "/company/login", {
-          email,
-          password,
-        });
+        const { data } = await axios.post(backendUrl + "/company/login", { email, password });
 
         if (data.success) {
           setCompanyData(data.company);
@@ -69,22 +64,16 @@ const RecruiterLogin = () => {
           toast.error(data.message || "Login failed. Please check your credentials.");
         }
       } else {
-        // Send JSON instead of FormData (no image)
-        const { data } = await axios.post(
-          backendUrl + "/company/register",
-          {
-            name,
-            password,
-            email
-          }
-        );
-        
+        const { data } = await axios.post(backendUrl + "/company/register", {
+          name,
+          password,
+          email,
+        });
+
         if (data.success) {
           setCompanyData(data.company);
           setCompanyToken(data.token);
-
           localStorage.setItem("companyToken", data.token);
-
           toast.success("Account created successfully! Welcome aboard!");
           setTimeout(() => {
             setShowRecruiterLogin(false);
@@ -108,45 +97,31 @@ const RecruiterLogin = () => {
     setPasswordStrength(0);
   };
 
-  const switchMode = (newState) => {
-    setState(newState);
+  const switchMode = () => {
+    setState((prev) => (prev === "Login" ? "Sign Up" : "Login"));
     resetForm();
   };
 
-  // Animation variants
   const overlayVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.3 } }
+    visible: { opacity: 1, transition: { duration: 0.3 } },
   };
 
   const modalVariants = {
     hidden: { opacity: 0, y: 20, scale: 0.95 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      scale: 1, 
-      transition: { type: "spring", stiffness: 350, damping: 25 } 
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { type: "spring", stiffness: 350, damping: 25 },
     },
-    exit: { 
-      opacity: 0, 
-      y: -20, 
-      scale: 0.95, 
-      transition: { duration: 0.2 } 
-    }
+    exit: { opacity: 0, y: -20, scale: 0.95, transition: { duration: 0.2 } },
   };
 
   const formVariants = {
     hidden: { opacity: 0, x: -20 },
-    visible: { 
-      opacity: 1, 
-      x: 0, 
-      transition: { duration: 0.3 } 
-    },
-    exit: { 
-      opacity: 0, 
-      x: 20, 
-      transition: { duration: 0.2 } 
-    }
+    visible: { opacity: 1, x: 0, transition: { duration: 0.3 } },
+    exit: { opacity: 0, x: 20, transition: { duration: 0.2 } },
   };
 
   return (
@@ -156,19 +131,11 @@ const RecruiterLogin = () => {
       animate="visible"
       variants={overlayVariants}
     >
-      <motion.div 
-        className="relative w-full max-w-md"
-        variants={modalVariants}
-      >
+      <motion.div className="relative w-full max-w-md" variants={modalVariants}>
         <div className="relative overflow-hidden bg-white rounded-3xl shadow-2xl">
-          
-          {/* Glass effect top area */}
           <div className="relative h-32 bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center">
-            {/* Blurred circles for decoration */}
             <div className="absolute -top-8 -left-8 w-32 h-32 rounded-full bg-blue-400 opacity-20 blur-xl"></div>
             <div className="absolute bottom-0 right-0 w-40 h-40 rounded-full bg-indigo-300 opacity-20 blur-xl"></div>
-            
-            {/* Floating avatar container */}
             <div className="absolute -bottom-12 flex items-center justify-center w-24 h-24 rounded-full bg-white shadow-lg p-1">
               <div className="flex items-center justify-center w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full">
                 <User size={36} className="text-white" />
@@ -176,21 +143,19 @@ const RecruiterLogin = () => {
             </div>
           </div>
 
-          {/* Header text */}
           <div className="px-8 pt-16 pb-4">
             <h1 className="text-2xl font-bold text-center text-gray-800 mb-1">
               {state === "Login" ? "Welcome Back" : "Join Our Platform"}
             </h1>
             <p className="text-sm text-center text-gray-500">
-              {state === "Login" 
-                ? "Access your recruiter dashboard" 
-                : "Create an account to find top talent"
-              }
+              {state === "Login"
+                ? "Access your recruiter dashboard"
+                : "Create an account to find top talent"}
             </p>
           </div>
 
           <AnimatePresence mode="wait">
-            <motion.form 
+            <motion.form
               key={state}
               initial="hidden"
               animate="visible"
@@ -201,7 +166,10 @@ const RecruiterLogin = () => {
             >
               {state !== "Login" && (
                 <div className="space-y-1.5">
-                  <label htmlFor="company-name" className="text-sm font-medium text-gray-700 ml-1 flex items-center gap-1.5">
+                  <label
+                    htmlFor="company-name"
+                    className="text-sm font-medium text-gray-700 ml-1 flex items-center gap-1.5"
+                  >
                     <User size={14} className="text-gray-500" />
                     Company Name
                   </label>
@@ -218,7 +186,10 @@ const RecruiterLogin = () => {
               )}
 
               <div className="space-y-1.5">
-                <label htmlFor="email" className="text-sm font-medium text-gray-700 ml-1 flex items-center gap-1.5">
+                <label
+                  htmlFor="email"
+                  className="text-sm font-medium text-gray-700 ml-1 flex items-center gap-1.5"
+                >
                   <Mail size={14} className="text-gray-500" />
                   Email Address
                 </label>
@@ -234,7 +205,10 @@ const RecruiterLogin = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label htmlFor="password" className="text-sm font-medium text-gray-700 ml-1 flex items-center gap-1.5">
+                <label
+                  htmlFor="password"
+                  className="text-sm font-medium text-gray-700 ml-1 flex items-center gap-1.5"
+                >
                   <Lock size={14} className="text-gray-500" />
                   Password
                 </label>
@@ -248,7 +222,7 @@ const RecruiterLogin = () => {
                     placeholder={state === "Login" ? "Enter your password" : "Create a strong password"}
                     required
                   />
-                  <button 
+                  <button
                     type="button"
                     className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-500 hover:text-gray-700"
                     onClick={() => setShowPassword(!showPassword)}
@@ -256,21 +230,20 @@ const RecruiterLogin = () => {
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
-                
-                {/* Password strength indicator (only for signup) */}
+
                 {state === "Sign Up" && password && (
                   <div className="mt-2">
                     <div className="flex items-center gap-1 h-1.5">
                       {[1, 2, 3, 4, 5].map((level) => (
-                        <div 
+                        <div
                           key={level}
                           className={`h-full rounded-full flex-1 transition-all ${
-                            passwordStrength >= level 
-                              ? passwordStrength <= 2 
-                                ? "bg-red-400" 
-                                : passwordStrength <= 3 
-                                  ? "bg-yellow-400" 
-                                  : "bg-green-400"
+                            passwordStrength >= level
+                              ? passwordStrength <= 2
+                                ? "bg-red-400"
+                                : passwordStrength <= 3
+                                ? "bg-yellow-400"
+                                : "bg-green-400"
                               : "bg-gray-200"
                           }`}
                         ></div>
@@ -308,7 +281,11 @@ const RecruiterLogin = () => {
                   <span className="flex items-center justify-center">
                     <svg className="w-5 h-5 mr-2 animate-spin" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
                     Processing...
                   </span>
@@ -319,7 +296,6 @@ const RecruiterLogin = () => {
                 )}
               </button>
 
-              {/* Social login options */}
               {state === "Login" && (
                 <div className="mt-5">
                   <div className="relative">
@@ -330,26 +306,17 @@ const RecruiterLogin = () => {
                       <span className="px-3 text-gray-500 bg-white">Or continue with</span>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-3 gap-3 mt-5">
-                    <button
-                      type="button"
-                      className="flex justify-center items-center py-2.5 border border-gray-200 rounded-xl shadow-sm bg-white hover:bg-gray-50 transition-colors text-gray-600"
-                    >
+                    <button className="flex justify-center items-center py-2.5 border border-gray-200 rounded-xl shadow-sm bg-white hover:bg-gray-50 transition-colors text-gray-600">
                       <svg viewBox="0 0 24 24" className="w-5 h-5">
                         <path fill="currentColor" d="M12 11v2h5.5c-.2 1.1-1.5 3.5-5.5 3.5-3.3 0-6-2.7-6-6s2.7-6 6-6c1.9 0 3.2.8 3.9 1.5l2.4-2.4C16.4 2 14.4 1 12 1 6.5 1 2 5.5 2 11s4.5 10 10 10c5.8 0 9.6-4.1 9.6-9.8 0-.7-.1-1.2-.2-1.7H12z"/>
                       </svg>
                     </button>
-                    <button
-                      type="button"
-                      className="flex justify-center items-center py-2.5 border border-gray-200 rounded-xl shadow-sm bg-white hover:bg-gray-50 transition-colors text-gray-600"
-                    >
+                    <button className="flex justify-center items-center py-2.5 border border-gray-200 rounded-xl shadow-sm bg-white hover:bg-gray-50 transition-colors text-gray-600">
                       <Linkedin size={20} />
                     </button>
-                    <button
-                      type="button"
-                      className="flex justify-center items-center py-2.5 border border-gray-200 rounded-xl shadow-sm bg-white hover:bg-gray-50 transition-colors text-gray-600"
-                    >
+                    <button className="flex justify-center items-center py-2.5 border border-gray-200 rounded-xl shadow-sm bg-white hover:bg-gray-50 transition-colors text-gray-600">
                       <Github size={20} />
                     </button>
                   </div>
@@ -365,7 +332,7 @@ const RecruiterLogin = () => {
                 {state === "Login" ? "Don't have an account? " : "Already have an account? "}
                 <button
                   type="button"
-                  onClick={() => switchMode(state === "Login" ? "Sign Up" : "Login")}
+                  onClick={switchMode}
                   className="font-medium text-blue-600 hover:text-blue-800 transition-colors"
                 >
                   {state === "Login" ? "Sign up now" : "Sign in"}
@@ -391,4 +358,5 @@ const RecruiterLogin = () => {
     </motion.div>
   );
 };
+
 export default RecruiterLogin;
