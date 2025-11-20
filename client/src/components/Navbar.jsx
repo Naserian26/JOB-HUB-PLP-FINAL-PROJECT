@@ -12,7 +12,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Handle scroll event
+  // Handle scroll event to change navbar appearance
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 50) {
@@ -26,18 +26,31 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Handle recruiter portal click
+  const handleRecruiterPortalClick = () => {
+    setShowRecruiterLogin(true);
+    setMobileMenuOpen(false); // Close mobile menu if open
+  };
+
+  // Handle get started click
+  const handleGetStartedClick = () => {
+    openSignIn();
+    setMobileMenuOpen(false); // Close mobile menu if open
+  };
+
   return (
     <>
       {/* Spacer div to prevent content jump when navbar becomes fixed */}
       <div className="h-2"></div>
       
-      <div className={`${scrolled ? "fixed animate-slideDown" : "relative"} top-0 left-0 right-0 z-20 w-full transition-all duration-300`}>
+      {/* Main navbar container with lower z-index to allow modals to appear above */}
+      <div className={`${scrolled ? "fixed animate-slideDown" : "relative"} top-0 left-0 right-0 z-10 w-full transition-all duration-300`}>
         <nav className={`transition-all duration-500 ${
           scrolled 
             ? "mx-4 my-3 max-w-6xl md:mx-auto bg-white/95 backdrop-blur-lg rounded-2xl shadow-lg border border-gray-100/50 py-4 px-6" 
             : " mx-8 rounded-xl bg-white shadow-sm border-b border-gray-100 py-6 px-8"
         } flex justify-between items-center`}>
-          {/* New Logo */}
+          {/* Logo */}
           <div 
             onClick={() => navigate("/")} 
             className="flex items-center gap-2 cursor-pointer group"
@@ -50,10 +63,11 @@ const Navbar = () => {
             </span>
           </div>
 
-          {/* User section with premium styling */}
+          {/* User section */}
           <div className="flex items-center gap-4">
             {user ? (
               <>
+                {/* User is logged in */}
                 <Link 
                   to="/applications" 
                   className="hidden md:flex items-center gap-2 text-gray-700 hover:text-blue-600 transition-all duration-200 px-4 py-2 rounded-lg hover:bg-blue-50"
@@ -80,23 +94,25 @@ const Navbar = () => {
               </>
             ) : (
               <>
+                {/* User is not logged in */}
                 <button
-                  onClick={(e) => setShowRecruiterLogin(true)}
+                  onClick={handleRecruiterPortalClick}
                   className="hidden md:block text-sm font-medium text-gray-600 hover:text-blue-600 transition-all duration-200 px-4 py-2 rounded-lg hover:bg-blue-50"
                 >
                   Recruiter Portal
                 </button>
                 <button
-                  onClick={(e) => openSignIn()}
+                  onClick={handleGetStartedClick}
                   className={`hidden md:block bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white px-6 py-2.5 rounded-xl font-medium text-sm ${scrolled ? 'shadow-lg hover:shadow-blue-500/30' : 'hover:shadow-md'} transition-all duration-300`}
                 >
                   Get Started
                 </button>
                 
-                {/* Mobile menu button - NEW */}
+                {/* Mobile menu button */}
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                   className="md:hidden p-2 rounded-lg hover:bg-gray-100"
+                  aria-label="Toggle menu"
                 >
                   {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
@@ -105,23 +121,17 @@ const Navbar = () => {
           </div>
         </nav>
         
-        {/* Mobile menu - NEW */}
+        {/* Mobile menu dropdown */}
         {mobileMenuOpen && (
-          <div className="md:hidden fixed top-16 right-4 bg-white rounded-xl shadow-lg p-4 w-48 z-30">
+          <div className="md:hidden fixed top-16 right-4 bg-white rounded-xl shadow-lg p-4 w-48 z-20">
             <button
-              onClick={(e) => {
-                setShowRecruiterLogin(true);
-                setMobileMenuOpen(false);
-              }}
+              onClick={handleRecruiterPortalClick}
               className="w-full text-left text-sm font-medium text-gray-600 hover:text-blue-600 transition-all duration-200 px-4 py-2 rounded-lg hover:bg-blue-50 mb-2"
             >
               Recruiter Portal
             </button>
             <button
-              onClick={(e) => {
-                openSignIn();
-                setMobileMenuOpen(false);
-              }}
+              onClick={handleGetStartedClick}
               className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300"
             >
               Get Started
@@ -130,7 +140,7 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Add this to your tailwind.config.js or CSS file */}
+      {/* Custom CSS for slide animation */}
       <style>{`
   @keyframes slideDown {
     from {
@@ -147,7 +157,6 @@ const Navbar = () => {
     animation: slideDown 0.4s ease-out forwards;
   }
 `}</style>
-
     </>
   );
 };
