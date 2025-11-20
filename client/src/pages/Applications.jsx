@@ -133,6 +133,17 @@ const Applications = () => {
         Home
       </motion.button>
 
+      {/* My Jobs Button - Now visible on all devices */}
+      <motion.button
+        onClick={() => navigate("/applications")}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="fixed top-4 left-32 z-50 flex items-center px-4 py-2 bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 text-white rounded-lg hover:bg-slate-700/80 hover:border-slate-600/50 transition-all duration-300 shadow-lg"
+      >
+        <Briefcase className="w-4 h-4 mr-2" />
+        My Jobs
+      </motion.button>
+
       <motion.div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10" variants={containerVariants} initial="hidden" animate="visible">
         {/* Header */}
         <motion.div variants={cardVariants} className="mb-12 text-center">
