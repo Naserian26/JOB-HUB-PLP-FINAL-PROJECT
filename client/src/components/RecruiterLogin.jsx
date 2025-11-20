@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -15,9 +15,19 @@ const RecruiterLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  const { setShowRecruiterLogin, backendUrl, setCompanyToken, setCompanyData } =
+  const { setShowRecruiterLogin, backendUrl, setCompanyToken, setCompanyData, companyToken } =
     useContext(AppContext);
+
+  // NEW: Check if user is already logged in
+  useEffect(() => {
+    // If user is already logged in, set state to Login
+    if (companyToken) {
+      setState("Login");
+    }
+    setIsInitialized(true);
+  }, [companyToken]);
 
   const checkPasswordStrength = (pass) => {
     let score = 0;
@@ -76,8 +86,6 @@ const RecruiterLogin = () => {
 
           localStorage.setItem("companyToken", data.token);
 
-          const { refreshRecruiterData } = useContext(AppContext);
-  refreshRecruiterData();
           toast.success("Account created successfully! Welcome aboard!");
           setTimeout(() => {
             setShowRecruiterLogin(false);
@@ -141,6 +149,11 @@ const RecruiterLogin = () => {
       transition: { duration: 0.2 } 
     }
   };
+
+  // NEW: Don't render until initialized
+  if (!isInitialized) {
+    return null;
+  }
 
   return (
     <motion.div
