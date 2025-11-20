@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,9 @@ import { User, Mail, Lock, Eye, EyeOff, X, Github, Linkedin } from "lucide-react
 
 const RecruiterLogin = () => {
   const navigate = useNavigate();
-  const [state, setState] = useState("Sign Up");
+  // Set initial state based on whether companyToken exists in localStorage
+  const initialToken = localStorage.getItem("companyToken");
+  const [state, setState] = useState(initialToken ? "Login" : "Sign Up");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -16,8 +18,15 @@ const RecruiterLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
 
-  const { setShowRecruiterLogin, backendUrl, setCompanyToken, setCompanyData } =
+  const { setShowRecruiterLogin, backendUrl, setCompanyToken, setCompanyData, companyToken } =
     useContext(AppContext);
+
+  // Update state when companyToken changes from context
+  useEffect(() => {
+    if (companyToken) {
+      setState("Login");
+    }
+  }, [companyToken]);
 
   const checkPasswordStrength = (pass) => {
     let score = 0;
@@ -76,8 +85,6 @@ const RecruiterLogin = () => {
 
           localStorage.setItem("companyToken", data.token);
 
-          const { refreshRecruiterData } = useContext(AppContext);
-  refreshRecruiterData();
           toast.success("Account created successfully! Welcome aboard!");
           setTimeout(() => {
             setShowRecruiterLogin(false);
@@ -384,5 +391,4 @@ const RecruiterLogin = () => {
     </motion.div>
   );
 };
-
 export default RecruiterLogin;
