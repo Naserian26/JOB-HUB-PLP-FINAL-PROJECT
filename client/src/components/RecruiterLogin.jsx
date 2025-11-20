@@ -113,6 +113,11 @@ const RecruiterLogin = () => {
     resetForm();
   };
 
+  const handleClose = () => {
+    setShowRecruiterLogin(false);
+    navigate("/");
+  };
+
   // Animation variants
   const overlayVariants = {
     hidden: { opacity: 0 },
@@ -150,17 +155,24 @@ const RecruiterLogin = () => {
   };
 
   return (
-    <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-      initial="hidden"
-      animate="visible"
-      variants={overlayVariants}
-    >
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+      {/* Backdrop */}
+      <motion.div
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        initial="hidden"
+        animate="visible"
+        variants={overlayVariants}
+        onClick={handleClose}
+      />
+      
+      {/* Modal container */}
       <motion.div 
-        className="relative w-full max-w-md"
+        className="relative z-[10000] w-full max-w-md mx-4"
         variants={modalVariants}
+        initial="hidden"
+        animate="visible"
       >
-        <div className="relative overflow-hidden bg-white rounded-3xl shadow-2xl">
+        <div className="relative overflow-visible bg-white rounded-3xl shadow-2xl">
           
           {/* Glass effect top area */}
           <div className="relative h-32 bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center">
@@ -374,21 +386,18 @@ const RecruiterLogin = () => {
             </div>
           </div>
 
-          {/* Close button - with higher z-index and explicit positioning */}
+          {/* Close button - with highest z-index and explicit positioning */}
           <button
             type="button"
-            onClick={() => {
-              setShowRecruiterLogin(false);
-              navigate("/");
-            }}
-            className="absolute top-4 right-4 z-10 p-2 text-white/80 transition-colors rounded-full hover:bg-white/20 hover:text-white focus:outline-none"
+            onClick={handleClose}
+            className="absolute top-4 right-4 z-[10001] p-2 text-white/80 transition-colors rounded-full hover:bg-white/20 hover:text-white focus:outline-none"
             aria-label="Close"
           >
             <X size={18} />
           </button>
         </div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 };
 
